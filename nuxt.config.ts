@@ -5,9 +5,10 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
+    spotifyClientSecret: '',
+
     public: {
-      spotifyClientId: '',
-      spotifyClientSecret: ''
+      spotifyClientId: ''
     }
   },
 

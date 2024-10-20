@@ -1,7 +1,8 @@
 import { User, UserManager, type UserManagerSettings } from 'oidc-client-ts';
 
 export default function () {
-  const { spotifyClientId, spotifyClientSecret } = useRuntimeConfig().public;
+  const { spotifyClientId } = useRuntimeConfig().public;
+  const { spotifyClientSecret } = useRuntimeConfig();
 
   const settings: UserManagerSettings = {
     authority: 'a',
