@@ -12,12 +12,15 @@ const { $spotifyApi } = useNuxtApp();
 // const error = route.query.error; // TODO: Handle error
 const user = useCookie<UserCookie>('user', { maxAge: 60 * 60 });
 
-const friendUserId = ref<string>('');
-
 const profileData = ref<SpotifyApi.CurrentUsersProfileResponse | null>(null);
 const myPlaylistData = ref<SpotifyApi.ListOfUsersPlaylistsResponse | null>(null);
 const friendData = ref<SpotifyApi.UserObjectPublic | null>(null);
 const friendPlaylistData = ref<SpotifyApi.ListOfUsersPlaylistsResponse | null>(null);
+
+const blendItem = ref<BlendItem>({
+  me: null,
+  friend: null
+});
 
 onMounted(async () => {
   if (code) {
@@ -77,33 +80,6 @@ async function fetchMe() {
   }
 }
 
-async function fetchUser(userId: string) {
-  try {
-    const data = await $spotifyApi<SpotifyApi.UserProfileResponse>(`/v1/users/${userId}`);
-
-    return data;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-  }
-}
-
-async function handleChooseFriendSubmit() {
-  if (friendUserId.value.length) {
-    const userData = await fetchUser(friendUserId.value);
-
-    if (userData) {
-      friendData.value = userData;
-    }
-
-    const playlistData = await fetchPlaylists(friendUserId.value);
-
-    if (playlistData) {
-      friendPlaylistData.value = playlistData;
-    }
-  }
-}
-
 async function fetchPlaylists(userId: string) {
   try {
     const data = await $spotifyApi<SpotifyApi.ListOfUsersPlaylistsResponse>(`/v1/users/${userId}/playlists`);
@@ -115,22 +91,15 @@ async function fetchPlaylists(userId: string) {
   }
 }
 
-const blendItem = ref<BlendItem>({
-  me: null,
-  friend: null
-});
+async function handleFriendSelected(userData: SpotifyApi.UserObjectPublic, friendId: string) {
+  if (userData) {
+    friendData.value = userData;
+  }
 
-function handleCreateBlend() {
-  if (blendItem.value.me && blendItem.value.friend) {
-    navigateTo({
-      path: '/blend/create-blend',
-      query: {
-        mePlaylistId: blendItem.value.me.playlistId,
-        mePlaylistName: blendItem.value.me.playlistName,
-        friendPlaylistId: blendItem.value.friend.playlistId,
-        friendPlaylistName: blendItem.value.friend.playlistName
-      }
-    });
+  const playlistData = await fetchPlaylists(friendId);
+
+  if (playlistData) {
+    friendPlaylistData.value = playlistData;
   }
 }
 </script>
@@ -148,24 +117,10 @@ function handleCreateBlend() {
         </div>
 
         <div class="blend-actions">
-          <div>
-            <h2>Choose a friend to blend with</h2>
-            <p>You can find user's ID on their profile under 'Copy link to profile',</p>
-            <p>E.g. https://open.spotify.com/user/<u>11100167167</u>?si=3e208455c8084677</p>
-            <form @submit.prevent="handleChooseFriendSubmit">
-              <BaseInput v-model="friendUserId" label="User ID" />
-              <BaseButton type="submit"> Submit </BaseButton>
-            </form>
-          </div>
-          <template v-if="blendItem.me && blendItem.friend">
-            <div class="blend-actions-selected">
-              <div>
-                Create blend for
-                <strong>{{ blendItem.me?.playlistName }}</strong> and <strong>{{ blendItem.friend?.playlistName }}</strong
-                >?
-              </div>
-              <BaseButton @click="handleCreateBlend"> Confirm </BaseButton>
-            </div>
+          <BlendChooseFriend @user-selected="handleFriendSelected" />
+
+          <template v-if="blendItem?.me && blendItem?.friend">
+            <BlendConfirm :blend-item="blendItem" />
           </template>
         </div>
 
@@ -185,7 +140,7 @@ function handleCreateBlend() {
             soundtrack for a hangout, road trip, or just want to see how your music styles fit together, Playlist Blend makes it easy.
           </p>
           <p>All you have to do it connect your Spotify account and choose playlists you want to blend.</p>
-          <BaseButton @click="handleAuth"> Log in with Spotify </BaseButton>
+          <BaseButton @click="handleAuth">Log in with Spotify</BaseButton>
         </div>
       </template>
     </div>
@@ -231,25 +186,6 @@ function handleCreateBlend() {
     display: grid;
     gap: 40px;
     grid-template-columns: 1fr @(min-width: 900px) 1fr 1fr;
-
-    form {
-      margin-top: 24px;
-      display: flex;
-      gap: 16px;
-      align-items: flex-end;
-    }
-
-    :deep(.input-wrapper) {
-      max-width: 300px;
-    }
-
-    &-selected {
-      display: flex;
-      flex-direction: column;
-      justify-content: end;
-      gap: 16px;
-      max-width: 500px;
-    }
   }
 }
 </style>

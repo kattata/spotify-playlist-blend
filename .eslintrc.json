@@ -23,6 +23,7 @@
     "semi": "off",
     "space-before-function-paren": "off",
     "indent": "off",
-    "arrow-parens": "off"
+    "arrow-parens": "off",
+    "vue/singleline-html-element-content-newline": "off"
   }
 }
