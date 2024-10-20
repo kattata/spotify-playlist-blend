@@ -41,11 +41,11 @@ async function handleChooseFriendSubmit() {
 <template>
   <div class="choose-friend">
     <h2>Choose a friend to blend with</h2>
-    <p>You can find user's ID on their profile under 'Copy link to profile',</p>
-    <p>E.g. https://open.spotify.com/user/<u>11100167167</u>?si=3e208455c8084677</p>
+    <p>To create a blend, you need to find your friend's profile ID.</p>
+    <p>Go to their profile, click 'Copy link to profile' and paste it below</p>
 
     <form @submit.prevent="handleChooseFriendSubmit">
-      <BaseInput v-model="friendValue" label="User ID" />
+      <BaseInput v-model="friendValue" label="Profile ID or profile share link" />
       <BaseButton type="submit"> Submit </BaseButton>
     </form>
   </div>
