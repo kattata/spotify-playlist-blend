@@ -4,6 +4,7 @@ import type { BlendItem } from '~/types';
 interface Props {
   myPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
   friendPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
+  friendName: string | undefined;
 }
 
 const props = defineProps<Props>();
@@ -58,7 +59,10 @@ function handleAddToBlend(playlist: SpotifyApi.PlaylistObjectSimplified, scope: 
 
       <template v-if="props.friendPlaylists">
         <div class="playlists-wrapper">
-          <h2>Their playlists</h2>
+          <h2>
+            <template v-if="props.friendName"> {{ props.friendName }}'s playlists </template>
+            <template v-else> Their playlists </template>
+          </h2>
           <div class="playlists">
             <template v-for="item in props.friendPlaylists?.items" :key="`friend-playlist__${item.id}`">
               <BaseItemPreview :image="item.images?.[0].url" :name="item.name">
