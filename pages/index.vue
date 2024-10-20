@@ -7,6 +7,8 @@ useHead({
 
 const route = useRoute();
 const code = route.query.code;
+const { $spotifyApi } = useNuxtApp();
+
 // const error = route.query.error; // TODO: Handle error
 const user = useCookie<UserCookie>('user', { maxAge: 60 * 60 });
 
@@ -21,15 +23,18 @@ onMounted(async () => {
   if (code) {
     if (!user.value) {
       await useAuth().signinCallback();
+
       const authUser = await useAuth().getUser();
 
       if (authUser?.access_token) {
         user.value = {
           accessToken: authUser.access_token
         };
-      }
 
-      fetchMe();
+        await nextTick(() => {
+          fetchMe();
+        });
+      }
 
       navigateTo('/');
     }
@@ -46,15 +51,18 @@ async function handleAuth() {
 
 async function fetchMe() {
   try {
-    const { data } = await useFetch<SpotifyApi.UserObjectPrivate>('https://api.spotify.com/v1/me', {
-      headers: { Authorization: `Bearer ${user.value?.accessToken}` }
+    const data = await $spotifyApi<SpotifyApi.CurrentUsersProfileResponse>('/v1/me', {
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${user.value.accessToken}`
+      }
     });
 
-    if (data.value) {
-      profileData.value = data.value;
+    if (data) {
+      profileData.value = data;
 
       // Save user id in a cookie
-      user.value.id = data.value.id;
+      user.value.id = data.id;
     }
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -62,7 +70,6 @@ async function fetchMe() {
   } finally {
     if (profileData.value?.id) {
       const data = await fetchPlaylists(profileData.value.id);
-
       if (data) {
         myPlaylistData.value = data;
       }
@@ -72,11 +79,9 @@ async function fetchMe() {
 
 async function fetchUser(userId: string) {
   try {
-    const { data } = await useFetch(`https://api.spotify.com/v1/users/${userId}`, {
-      headers: { Authorization: `Bearer ${user.value?.accessToken}` }
-    });
+    const data = await $spotifyApi<SpotifyApi.UserProfileResponse>(`/v1/users/${userId}`);
 
-    return data.value;
+    return data;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -101,14 +106,9 @@ async function handleChooseFriendSubmit() {
 
 async function fetchPlaylists(userId: string) {
   try {
-    const { data } = await useFetch<Promise<SpotifyApi.ListOfUsersPlaylistsResponse>>(
-      `https://api.spotify.com/v1/users/${userId}/playlists`,
-      {
-        headers: { Authorization: `Bearer ${user.value?.accessToken}` }
-      }
-    );
+    const data = await $spotifyApi<SpotifyApi.ListOfUsersPlaylistsResponse>(`/v1/users/${userId}/playlists`);
 
-    return data.value;
+    return data;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);

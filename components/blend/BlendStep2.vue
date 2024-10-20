@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { UserCookie } from '~/types';
 
+const { $spotifyApi } = useNuxtApp();
+
 const query = useRoute().query;
 const mePlaylistId = String(query.mePlaylistId);
 const mePlaylistName = String(query.mePlaylistName);
@@ -16,11 +18,9 @@ const newBlendPlaylist = ref<SpotifyApi.CreatePlaylistResponse | null>(null);
 
 async function fetchPlaylistTracks(playlistId: string) {
   try {
-    const { data } = await useFetch<SpotifyApi.PlaylistTrackResponse>(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-      headers: { Authorization: `Bearer ${user.value?.accessToken}` }
-    });
+    const data = await $spotifyApi<SpotifyApi.PlaylistTrackResponse>(`/v1/playlists/${playlistId}/tracks`);
 
-    return data.value;
+    return data;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -48,10 +48,9 @@ async function handleCreateBlend() {
 
 async function handleCreatePlaylist() {
   try {
-    const { data } = await useFetch<SpotifyApi.CreatePlaylistResponse>(`https://api.spotify.com/v1/users/${user.value.id}/playlists`, {
+    const data = await $spotifyApi<SpotifyApi.CreatePlaylistResponse>(`/v1/users/${user.value.id}/playlists`, {
       method: 'post',
       headers: {
-        Authorization: `Bearer ${user.value?.accessToken}`,
         'Content-Type': 'application/json'
       },
       body: {
@@ -61,9 +60,9 @@ async function handleCreatePlaylist() {
       }
     });
 
-    newBlendPlaylist.value = data.value;
+    newBlendPlaylist.value = data;
 
-    return data.value;
+    return data;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -76,21 +75,17 @@ async function handleCreatePlaylist() {
 
 async function addTracksToPlaylist() {
   try {
-    const { data } = await useFetch<SpotifyApi.AddTracksToPlaylistResponse>(
-      `https://api.spotify.com/v1/playlists/${newBlendPlaylist.value?.id}/tracks`,
-      {
-        method: 'post',
-        headers: {
-          Authorization: `Bearer ${user.value?.accessToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: {
-          uris: commonTracks.value?.map(track => track.track?.uri)
-        }
+    const data = await $spotifyApi<SpotifyApi.AddTracksToPlaylistResponse>(`/v1/playlists/${newBlendPlaylist.value?.id}/tracks`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
+        uris: commonTracks.value?.map(track => track.track?.uri)
       }
-    );
+    });
 
-    return data.value;
+    return data;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
