@@ -24,7 +24,9 @@ const props = defineProps<Props>();
         </div>
       </div>
     </div>
-    <slot></slot>
+    <div class="item-preview-slot">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -32,7 +34,7 @@ const props = defineProps<Props>();
 .item-preview {
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr 100px;
+  grid-template-columns: 1fr 150px;
   gap: 16px;
   border-bottom: 1px solid var(--color-line);
   padding: 12px;
@@ -53,6 +55,10 @@ const props = defineProps<Props>();
   &-description {
     font-size: var(--font-size-s);
     margin-top: 4px;
+  }
+
+  &-slot {
+    justify-self: end;
   }
 }
 </style>

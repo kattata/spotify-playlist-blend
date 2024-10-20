@@ -37,7 +37,7 @@ const value = defineModel<string>();
 
 .input {
   padding: 12px;
-  border-radius: var(--border-radius-small);
+  border-radius: var(--border-radius-medium);
   outline: 0;
   border: 1px solid var(--color-line);
   font-family: var(--font-family-base);

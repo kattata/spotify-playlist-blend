@@ -31,6 +31,7 @@
 
   /* Border */
   --border-radius-small: 12px;
+  --border-radius-medium: 20px;
 
   /* Spacing */
   --container-width-s: 1000px;

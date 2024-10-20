@@ -136,6 +136,12 @@ async function fetchPlaylists(userId: string) {
     margin-bottom: 40px;
     border-bottom: 1px solid var(--color-line);
 
+    form {
+      display: flex;
+      gap: 16px;
+      align-items: flex-end;
+    }
+
     :deep(.input-wrapper) {
       max-width: 300px;
     }
