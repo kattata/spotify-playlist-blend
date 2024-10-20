@@ -8,7 +8,7 @@ export default function () {
     client_id: spotifyClientId,
     client_secret: spotifyClientSecret,
     response_type: 'code',
-    scope: 'user-read-private user-read-email',
+    scope: 'user-read-private user-read-email playlist-read-private',
     redirect_uri: 'http://localhost:3000',
     metadata: {
       authorization_endpoint: 'https://accounts.spotify.com/authorize',

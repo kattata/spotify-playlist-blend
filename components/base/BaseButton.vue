@@ -34,12 +34,7 @@ const isDisabled = computed(() => {
 </script>
 
 <template>
-  <button
-    class="reset-button button"
-    :class="`${buttonClasses}`"
-    :disabled="isDisabled"
-    :type="type"
-  >
-    <slot />
+  <button class="reset-button button" :class="`${buttonClasses}`" :disabled="isDisabled" :type="type">
+    <slot></slot>
   </button>
 </template>

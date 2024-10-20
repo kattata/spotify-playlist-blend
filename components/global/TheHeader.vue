@@ -6,7 +6,11 @@
       <div class="divider divider--horizontal"></div>
       <BaseLink to="/"> Spotify Playlist Blend </BaseLink>
 
-      <ul class="navigation-items-desktop"></ul>
+      <ul class="navigation-items-desktop">
+        <li>
+          <BaseLink to="/artist"> Artist </BaseLink>
+        </li>
+      </ul>
 
       <ul class="navigation-items-mobile"></ul>
     </header>
