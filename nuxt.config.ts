@@ -19,12 +19,7 @@ export default defineNuxtConfig({
     }
   },
 
-  components: [
-    { path: '~/components' },
-    { path: '~/components/base' },
-    { path: '~/components/front-page' },
-    { path: '~/components/global' }
-  ],
+  components: [{ path: '~/components' }, { path: '~/components/base' }, { path: '~/components/blend' }, { path: '~/components/global' }],
 
   modules: ['nuxt-icons', '@nuxt/image', '@nuxtjs/i18n'],
 

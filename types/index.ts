@@ -1,4 +1,12 @@
 export interface BlendItem {
-  me: string | null;
-  friend: string | null;
+  me: {
+    playlistId: string | null;
+    playlistName: string;
+    userName?: string;
+  } | null;
+  friend: {
+    playlistId: string | null;
+    playlistName: string;
+    userName?: string;
+  } | null;
 }
