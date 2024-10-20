@@ -230,7 +230,7 @@ function handleCreateBlend() {
     border-bottom: 1px solid var(--color-line);
     display: grid;
     gap: 40px;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr @(min-width: 900px) 1fr 1fr;
 
     form {
       margin-top: 24px;

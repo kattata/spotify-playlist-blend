@@ -6,7 +6,7 @@ const props = withDefaults(
     disabled?: boolean;
     modifiers?: string[];
     type?: 'button' | 'submit' | 'reset';
-    variant?: 'primary' | 'secondary' | 'tertiary';
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'ghost';
   }>(),
   {
     to: () => '',
@@ -49,5 +49,10 @@ const isDisabled = computed(() => {
   white-space: nowrap;
   width: fit-content;
   height: fit-content;
+
+  &--ghost {
+    border: 0;
+    background-color: transparent;
+  }
 }
 </style>
