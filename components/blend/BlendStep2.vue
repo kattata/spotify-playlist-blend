@@ -124,16 +124,18 @@ function handleNoBlendClick() {
               </div>
 
               <div class="create-playlist">
-                <p>If you like the new blend, go ahead and save it as a new playlist!</p>
-                <BaseButton @click="handleCreatePlaylist"> Create playlist </BaseButton>
-
-                <div class="create-playlist-success">
-                  <template v-if="newBlendPlaylist">
+                <template v-if="newBlendPlaylist">
+                  <div class="create-playlist-success">
                     All done. Your
                     <BaseLink :to="newBlendPlaylist.external_urls.spotify" target="_blank"> new playlist </BaseLink>
                     has been created!
-                  </template>
-                </div>
+                  </div>
+                </template>
+
+                <template v-else>
+                  <p>If you like the new blend, go ahead and save it as a new playlist!</p>
+                  <BaseButton @click="handleCreatePlaylist"> Create playlist </BaseButton>
+                </template>
               </div>
             </div>
           </template>

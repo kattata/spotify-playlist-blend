@@ -4,6 +4,10 @@ const query = useRoute().query;
 if (!query.mePlaylistId || !query.friendPlaylistId) {
   navigateTo('/');
 }
+
+useHead({
+  title: 'Create blend | Playlist Blend'
+});
 </script>
 
 <template>
