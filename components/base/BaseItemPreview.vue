@@ -2,6 +2,7 @@
 interface Props {
   image?: string;
   name: string;
+  description?: string;
 }
 
 const props = defineProps<Props>();
@@ -13,7 +14,12 @@ const props = defineProps<Props>();
       <template v-if="props.image">
         <BaseImage :src="props.image" width="50px" />
       </template>
-      <div>{{ props.name }}</div>
+      <div>
+        <div>{{ props.name }}</div>
+        <div v-if="props.description" class="item-preview-description">
+          {{ props.description }}
+        </div>
+      </div>
     </div>
     <slot></slot>
   </div>
@@ -32,6 +38,11 @@ const props = defineProps<Props>();
     display: flex;
     align-items: center;
     gap: 16px;
+  }
+
+  &-description {
+    font-size: var(--font-size-s);
+    margin-top: 4px;
   }
 }
 </style>

@@ -60,7 +60,11 @@ function handleCreateBlend() {
             <div class="playlists">
               <template v-for="item in commonTracks" :key="`blend-playlist__${item.track?.id}`">
                 <template v-if="item.track?.name">
-                  <BaseItemPreview :name="item.track.name" />
+                  <BaseItemPreview
+                    :name="item.track.name"
+                    :image="item.track.album.images?.[0]?.url"
+                    :description="item.track.artists.map(artist => artist.name).join(', ')"
+                  />
                 </template>
               </template>
             </div>
