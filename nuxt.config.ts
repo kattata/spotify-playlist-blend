@@ -8,7 +8,8 @@ export default defineNuxtConfig({
     spotifyClientSecret: '',
 
     public: {
-      spotifyClientId: ''
+      spotifyClientId: '',
+      spotifyReturnUri: ''
     }
   },
 

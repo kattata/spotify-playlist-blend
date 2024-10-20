@@ -1,7 +1,7 @@
 import { User, UserManager, type UserManagerSettings } from 'oidc-client-ts';
 
 export default function () {
-  const { spotifyClientId } = useRuntimeConfig().public;
+  const { spotifyClientId, spotifyReturnUri } = useRuntimeConfig().public;
   const { spotifyClientSecret } = useRuntimeConfig();
 
   const settings: UserManagerSettings = {
@@ -10,7 +10,7 @@ export default function () {
     client_secret: spotifyClientSecret,
     response_type: 'code',
     scope: 'user-read-private user-read-email playlist-read-private',
-    redirect_uri: 'http://localhost:3000',
+    redirect_uri: spotifyReturnUri,
     metadata: {
       authorization_endpoint: 'https://accounts.spotify.com/authorize',
       token_endpoint: 'https://accounts.spotify.com/api/token'
