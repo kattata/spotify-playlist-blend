@@ -1,6 +1,6 @@
 export function useBreakpoints() {
   function isMobile() {
-    if (process.server) {
+    if (import.meta.server) {
       return;
     }
 
