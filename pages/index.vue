@@ -8,8 +8,11 @@ const code = route.query.code;
 // const error = route.query.error; // TODO: Handle error
 const accessToken = useCookie('accessToken', { maxAge: 60 * 60 });
 
+const friendUserId = ref<string>('');
+
 const profileData = ref<SpotifyApi.CurrentUsersProfileResponse | null>(null);
 const myPlaylistData = ref<SpotifyApi.ListOfUsersPlaylistsResponse | null>(null);
+const friendPlaylistData = ref<SpotifyApi.ListOfUsersPlaylistsResponse | null>(null);
 
 onMounted(async () => {
   if (code) {
@@ -47,23 +50,36 @@ async function fetchProfile() {
     // eslint-disable-next-line no-console
     console.error(error);
   } finally {
-    fetchPlaylists();
+    if (profileData.value?.id) {
+      const data = await fetchPlaylists(profileData.value.id);
+
+      if (data) {
+        myPlaylistData.value = data;
+      }
+    }
   }
 }
 
-async function fetchPlaylists() {
+async function handleChooseFriendSubmit() {
+  if (friendUserId.value.length) {
+    const data = await fetchPlaylists(friendUserId.value);
+
+    if (data) {
+      friendPlaylistData.value = data;
+    }
+  }
+}
+
+async function fetchPlaylists(userId: string) {
   try {
-    if (!profileData.value?.id) {
-      return;
-    }
+    const { data } = await useFetch<Promise<SpotifyApi.ListOfUsersPlaylistsResponse>>(
+      `https://api.spotify.com/v1/users/${userId}/playlists`,
+      {
+        headers: { Authorization: `Bearer ${accessToken.value}` }
+      }
+    );
 
-    const { data } = await useFetch(`https://api.spotify.com/v1/users/${profileData.value.id}/playlists`, {
-      headers: { Authorization: `Bearer ${accessToken.value}` }
-    });
-
-    if (data.value) {
-      myPlaylistData.value = data.value;
-    }
+    return data.value;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -78,14 +94,20 @@ async function fetchPlaylists() {
         <div class="authentication-success">
           <p>You have been successfully authenticated as</p>
           <div class="authentication-success-profile">
-            <BaseImage v-if="profileData?.images?.[0]?.url" :src="profileData?.images?.[0]?.url" width="70px" />
+            <BaseImage v-if="profileData?.images?.[0]?.url" :src="profileData?.images?.[0]?.url" width="50px" />
             <strong>{{ profileData?.display_name }}</strong>
           </div>
         </div>
 
-        <template v-if="myPlaylistData">
-          <BlendStep1 :my-playlists="myPlaylistData" :friend-playlists="myPlaylistData" />
-        </template>
+        <div class="choose-friend">
+          <h2>Choose friend to blend with</h2>
+          <form @submit.prevent="handleChooseFriendSubmit">
+            <BaseInput v-model="friendUserId" label="User ID" />
+            <BaseButton type="submit"> Submit </BaseButton>
+          </form>
+        </div>
+
+        <BlendStep1 :my-playlists="myPlaylistData" :friend-playlists="friendPlaylistData" />
       </template>
 
       <template v-else>
@@ -97,12 +119,26 @@ async function fetchPlaylists() {
 
 <style lang="postcss" scoped>
 .front-page {
+  .authentication-success {
+    border-bottom: 1px solid var(--color-line);
+  }
+
   .authentication-success-profile {
     display: flex;
     align-items: center;
     gap: 16px;
     margin-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .choose-friend {
+    padding-block: 32px;
     margin-bottom: 40px;
+    border-bottom: 1px solid var(--color-line);
+
+    :deep(.input-wrapper) {
+      max-width: 300px;
+    }
   }
 
   img {

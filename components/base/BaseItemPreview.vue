@@ -12,7 +12,10 @@ const props = defineProps<Props>();
   <div class="item-preview">
     <div class="item-preview-details">
       <template v-if="props.image">
-        <BaseImage :src="props.image" width="50px" />
+        <BaseImage class="item-preview-image" :src="props.image" width="50px" />
+      </template>
+      <template v-else>
+        <div class="item-preview-image"></div>
       </template>
       <div>
         <div>{{ props.name }}</div>
@@ -33,6 +36,13 @@ const props = defineProps<Props>();
   gap: 16px;
   border-bottom: 1px solid var(--color-line);
   padding: 12px;
+
+  &-image {
+    background-color: var(--color-background);
+    width: 50px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+  }
 
   &-details {
     display: flex;

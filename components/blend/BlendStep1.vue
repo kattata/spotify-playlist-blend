@@ -2,8 +2,8 @@
 import type { BlendItem } from '~/types';
 
 interface Props {
-  myPlaylists?: SpotifyApi.ListOfUsersPlaylistsResponse;
-  friendPlaylists?: SpotifyApi.ListOfUsersPlaylistsResponse;
+  myPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
+  friendPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
 }
 
 const props = defineProps<Props>();
@@ -43,34 +43,39 @@ function handleAddToBlend(playlist: SpotifyApi.PlaylistObjectSimplified, scope: 
 <template>
   <div class="blend-step">
     <section>
-      <div class="playlists-wrapper">
-        <h2>Your playlists</h2>
-        <div class="playlists">
-          <template v-for="item in props.myPlaylists?.items" :key="`my-playlist__${item.id}`">
-            <BaseItemPreview :image="item.images?.[0].url" :name="item.name">
-              <BaseButton @click="handleAddToBlend(item, 'me')"> Add to blend </BaseButton>
-            </BaseItemPreview>
-          </template>
+      <template v-if="props.myPlaylists">
+        <div class="playlists-wrapper">
+          <h2>Your playlists</h2>
+          <div class="playlists">
+            <template v-for="item in props.myPlaylists?.items" :key="`my-playlist__${item.id}`">
+              <BaseItemPreview :image="item.images?.[0].url" :name="item.name">
+                <BaseButton @click="handleAddToBlend(item, 'me')"> Add to blend </BaseButton>
+              </BaseItemPreview>
+            </template>
+          </div>
         </div>
-      </div>
+      </template>
 
-      <div class="playlists-wrapper">
-        <h2>Their playlists</h2>
-        <div class="playlists">
-          <template v-for="item in props.friendPlaylists?.items" :key="`friend-playlist__${item.id}`">
-            <BaseItemPreview :image="item.images?.[0].url" :name="item.name">
-              <BaseButton @click="handleAddToBlend(item, 'friend')"> Add to blend </BaseButton>
-            </BaseItemPreview>
-          </template>
+      <template v-if="props.friendPlaylists">
+        <div class="playlists-wrapper">
+          <h2>Their playlists</h2>
+          <div class="playlists">
+            <template v-for="item in props.friendPlaylists?.items" :key="`friend-playlist__${item.id}`">
+              <BaseItemPreview :image="item.images?.[0].url" :name="item.name">
+                <BaseButton @click="handleAddToBlend(item, 'friend')"> Add to blend </BaseButton>
+              </BaseItemPreview>
+            </template>
+          </div>
         </div>
-      </div>
+      </template>
     </section>
   </div>
 </template>
 
 <style lang="postcss" scoped>
 section {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 40px;
 }
 

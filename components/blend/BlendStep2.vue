@@ -38,9 +38,13 @@ function handleCreateBlend() {
 
   if (matchingTracks?.length) {
     commonTracks.value = matchingTracks;
-
-    readyToDisplayBlend.value = true;
   }
+
+  readyToDisplayBlend.value = true;
+}
+
+function handleNoBlendClick() {
+  navigateTo('/');
 }
 </script>
 
@@ -54,21 +58,30 @@ function handleCreateBlend() {
         <BaseButton @click="handleCreateBlend"> Create blend </BaseButton>
 
         <template v-if="readyToDisplayBlend">
-          <div class="playlist-blend">
-            <h3>Your new blend</h3>
+          <template v-if="commonTracks?.length">
+            <div class="playlist-blend">
+              <h3>Your new blend</h3>
 
-            <div class="playlists">
-              <template v-for="item in commonTracks" :key="`blend-playlist__${item.track?.id}`">
-                <template v-if="item.track?.name">
-                  <BaseItemPreview
-                    :name="item.track.name"
-                    :image="item.track.album.images?.[0]?.url"
-                    :description="item.track.artists.map(artist => artist.name).join(', ')"
-                  />
+              <div class="playlists">
+                <template v-for="item in commonTracks" :key="`blend-playlist__${item.track?.id}`">
+                  <template v-if="item.track?.name">
+                    <BaseItemPreview
+                      :name="item.track.name"
+                      :image="item.track.album.images?.[0]?.url"
+                      :description="item.track.artists.map(artist => artist.name).join(', ')"
+                    />
+                  </template>
                 </template>
-              </template>
+              </div>
             </div>
-          </div>
+          </template>
+
+          <template v-else>
+            <div class="no-results">
+              <div>Unfortunately, you have no common songs :(</div>
+              <BaseButton @click="handleNoBlendClick"> Try a different blend </BaseButton>
+            </div>
+          </template>
         </template>
       </section>
     </div>
@@ -77,6 +90,10 @@ function handleCreateBlend() {
 
 <style lang="postcss" scoped>
 .playlist-blend {
+  margin-top: 40px;
+}
+
+.no-results {
   margin-top: 40px;
 }
 </style>
