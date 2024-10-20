@@ -10,3 +10,7 @@ export interface BlendItem {
     userName?: string;
   } | null;
 }
+
+export interface UserCookie {
+  accessToken: string;
+}

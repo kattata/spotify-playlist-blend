@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BlendItem } from '~/types';
+import type { BlendItem, UserCookie } from '~/types';
 
 useHead({
   title: 'Playlist Blend'
@@ -8,7 +8,7 @@ useHead({
 const route = useRoute();
 const code = route.query.code;
 // const error = route.query.error; // TODO: Handle error
-const accessToken = useCookie('accessToken', { maxAge: 60 * 60 });
+const user = useCookie<UserCookie>('user', { maxAge: 60 * 60 });
 
 const friendUserId = ref<string>('');
 
@@ -19,11 +19,15 @@ const friendPlaylistData = ref<SpotifyApi.ListOfUsersPlaylistsResponse | null>(n
 
 onMounted(async () => {
   if (code) {
-    if (!accessToken.value) {
+    if (!user.value) {
       await useAuth().signinCallback();
-      const user = await useAuth().getUser();
+      const authUser = await useAuth().getUser();
 
-      accessToken.value = user?.access_token;
+      if (authUser?.access_token) {
+        user.value = {
+          accessToken: authUser.access_token
+        };
+      }
 
       fetchMe();
 
@@ -32,7 +36,7 @@ onMounted(async () => {
   }
 });
 
-if (accessToken.value) {
+if (user.value?.accessToken) {
   fetchMe();
 }
 
@@ -43,7 +47,7 @@ async function handleAuth() {
 async function fetchMe() {
   try {
     const { data } = await useFetch('https://api.spotify.com/v1/me', {
-      headers: { Authorization: `Bearer ${accessToken.value}` }
+      headers: { Authorization: `Bearer ${user.value?.accessToken}` }
     });
 
     if (data.value) {
@@ -66,7 +70,7 @@ async function fetchMe() {
 async function fetchUser(userId: string) {
   try {
     const { data } = await useFetch(`https://api.spotify.com/v1/users/${userId}`, {
-      headers: { Authorization: `Bearer ${accessToken.value}` }
+      headers: { Authorization: `Bearer ${user.value?.accessToken}` }
     });
 
     return data.value;
@@ -97,7 +101,7 @@ async function fetchPlaylists(userId: string) {
     const { data } = await useFetch<Promise<SpotifyApi.ListOfUsersPlaylistsResponse>>(
       `https://api.spotify.com/v1/users/${userId}/playlists`,
       {
-        headers: { Authorization: `Bearer ${accessToken.value}` }
+        headers: { Authorization: `Bearer ${user.value?.accessToken}` }
       }
     );
 
@@ -127,11 +131,11 @@ function handleCreateBlend() {
   }
 }
 </script>
-<!-- https://open.spotify.com/user/1197527999?si=b7b69cdc2a8247f4 -->
+
 <template>
   <div class="page front-page">
     <div class="container">
-      <template v-if="accessToken">
+      <template v-if="user?.accessToken">
         <div class="authentication-success">
           <p>You are logged in as</p>
           <div class="authentication-success-profile">
@@ -187,8 +191,6 @@ function handleCreateBlend() {
 
 <style lang="postcss" scoped>
 .front-page {
-  min-height: calc(100vh - 240px);
-
   .intro {
     max-width: 600px;
 

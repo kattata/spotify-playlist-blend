@@ -5,7 +5,7 @@ const mePlaylistName = String(query.mePlaylistName);
 const friendPlaylistId = String(query.friendPlaylistId);
 const friendPlaylistName = String(query.friendPlaylistName);
 
-const accessToken = useCookie('accessToken');
+const user = useCookie('user');
 
 const commonTracks = ref<SpotifyApi.PlaylistTrackObject[] | null>(null);
 
@@ -14,7 +14,7 @@ const readyToDisplayBlend = ref<boolean>(false);
 async function fetchPlaylistTracks(playlistId: string) {
   try {
     const { data } = await useFetch<SpotifyApi.PlaylistTrackResponse>(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-      headers: { Authorization: `Bearer ${accessToken.value}` }
+      headers: { Authorization: `Bearer ${user.value?.accessToken}` }
     });
 
     return data.value;
@@ -41,6 +41,18 @@ async function handleCreateBlend() {
   }
 
   readyToDisplayBlend.value = true;
+}
+
+async function handleCreatePlaylist() {
+  // try {
+  //   const { data } = await useFetch<SpotifyApi.PlaylistTrackResponse>(`https://api.spotify.com/v1/users/${}/playlists`, {
+  //     headers: { Authorization: `Bearer ${user.value?.accessToken}` }
+  //   });
+  //   return data.value;
+  // } catch (error) {
+  //   // eslint-disable-next-line no-console
+  //   console.error(error)
+  // }
 }
 
 function handleNoBlendClick() {
@@ -73,6 +85,8 @@ function handleNoBlendClick() {
                   </template>
                 </template>
               </div>
+
+              <BaseButton @click="handleCreatePlaylist"> Create playlist </BaseButton>
             </div>
           </template>
 
