@@ -20,7 +20,6 @@ const props = withDefaults(
 <style lang="postcss" scoped>
 a {
   color: var(--color-text);
-  text-decoration: none;
   font-size: var(--font-size-m);
   transition: color 0.3s ease-in-out;
 

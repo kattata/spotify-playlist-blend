@@ -46,12 +46,15 @@ async function handleAuth() {
 
 async function fetchMe() {
   try {
-    const { data } = await useFetch('https://api.spotify.com/v1/me', {
+    const { data } = await useFetch<SpotifyApi.UserObjectPrivate>('https://api.spotify.com/v1/me', {
       headers: { Authorization: `Bearer ${user.value?.accessToken}` }
     });
 
     if (data.value) {
       profileData.value = data.value;
+
+      // Save user id in a cookie
+      user.value.id = data.value.id;
     }
   } catch (error) {
     // eslint-disable-next-line no-console
