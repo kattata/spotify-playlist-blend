@@ -1,0 +1,21 @@
+@import './_variables.css';
+@import './_container.css';
+@import './_fonts.css';
+@import './_typography.css';
+@import './_utils.css';
+
+* {
+  line-height: var(--line-height-base);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-family-base-primary);
+  font-size: var(--font-size-m);
+}

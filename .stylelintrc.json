@@ -1,0 +1,21 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-recommended-vue"],
+  "rules": {
+    "rule-empty-line-before": [
+      "always",
+      {
+        "ignore": ["after-comment", "first-nested"]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.vue", "**/*.vue", "**/*.css"],
+      "rules": {
+        "selector-class-pattern": null,
+        "import-notation": "string",
+        "media-feature-range-notation": null
+      }
+    }
+  ]
+}

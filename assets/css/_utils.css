@@ -1,0 +1,34 @@
+.reset-button {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  color: inherit;
+  font: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  &[disabled] {
+    color: var(--color-text);
+    cursor: not-allowed;
+  }
+}
+
+.divider {
+  background-color: var(--color-line);
+
+  &--vertical {
+    margin: auto;
+    width: 1px;
+    height: 100%;
+  }
+
+  &--horizontal {
+    width: 100%;
+    height: 1px;
+  }
+}
