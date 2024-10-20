@@ -24,10 +24,10 @@ async function fetchPlaylistTracks(playlistId: string) {
   }
 }
 
-const myTracks = await fetchPlaylistTracks(mePlaylistId);
-const friendTracks = await fetchPlaylistTracks(friendPlaylistId);
+async function handleCreateBlend() {
+  const myTracks = await fetchPlaylistTracks(mePlaylistId);
+  const friendTracks = await fetchPlaylistTracks(friendPlaylistId);
 
-function handleCreateBlend() {
   if (!mePlaylistId || !friendPlaylistId) {
     return;
   }
@@ -95,5 +95,9 @@ function handleNoBlendClick() {
 
 .no-results {
   margin-top: 40px;
+
+  button {
+    margin-top: 16px;
+  }
 }
 </style>

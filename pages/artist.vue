@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 useHead({
-  title: 'Spotify Playlist Blend | Artist'
+  title: 'Playlist Blend | Artist'
 });
 
 const accessToken = useCookie('accessToken');

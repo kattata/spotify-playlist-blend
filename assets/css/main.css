@@ -19,3 +19,7 @@ body {
   font-family: var(--font-family-base-primary);
   font-size: var(--font-size-m);
 }
+
+.page {
+  min-height: calc(100vh - 240px);
+}

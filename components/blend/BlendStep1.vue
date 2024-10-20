@@ -5,39 +5,50 @@ interface Props {
   myPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
   friendPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
   friendName: string | undefined;
+  modelValue: BlendItem;
 }
 
 const props = defineProps<Props>();
 
-const blendItem = ref<BlendItem>({
-  me: null,
-  friend: null
+const emit = defineEmits<{
+  'update:blendItem': [BlendItem];
+}>();
+
+const internalBlendItem = defineModel<BlendItem>({
+  required: true,
+  get: () => props.modelValue
 });
 
 function handleAddToBlend(playlist: SpotifyApi.PlaylistObjectSimplified, scope: 'me' | 'friend') {
   if (scope === 'me') {
-    blendItem.value.me = {
+    internalBlendItem.value.me = {
       playlistId: playlist.id,
       playlistName: playlist.name
     };
   } else {
-    blendItem.value.friend = {
+    internalBlendItem.value.friend = {
       playlistId: playlist.id,
       playlistName: playlist.name
     };
   }
 
-  if (blendItem.value.me && blendItem.value.friend) {
-    navigateTo({
-      path: '/blend/create-blend',
-      query: {
-        mePlaylistId: blendItem.value.me.playlistId,
-        mePlaylistName: blendItem.value.me.playlistName,
-        friendPlaylistId: blendItem.value.friend.playlistId,
-        friendPlaylistName: blendItem.value.friend.playlistName
-      }
-    });
-  }
+  emit('update:blendItem', internalBlendItem.value);
+
+  // if (blendItem.value.me && blendItem.value.friend) {
+  //   navigateTo({
+  //     path: '/blend/create-blend',
+  //     query: {
+  //       mePlaylistId: blendItem.value.me.playlistId,
+  //       mePlaylistName: blendItem.value.me.playlistName,
+  //       friendPlaylistId: blendItem.value.friend.playlistId,
+  //       friendPlaylistName: blendItem.value.friend.playlistName
+  //     }
+  //   });
+  // }
+}
+
+function getIsAddedToBlend(playlist: SpotifyApi.PlaylistObjectSimplified) {
+  return playlist.id === internalBlendItem.value.me?.playlistId || playlist.id === internalBlendItem.value.friend?.playlistId;
 }
 </script>
 
@@ -50,7 +61,12 @@ function handleAddToBlend(playlist: SpotifyApi.PlaylistObjectSimplified, scope: 
           <div class="playlists">
             <template v-for="item in props.myPlaylists?.items" :key="`my-playlist__${item.id}`">
               <BaseItemPreview :image="item.images?.[0].url" :name="item.name">
-                <BaseButton @click="handleAddToBlend(item, 'me')"> Add to blend </BaseButton>
+                <template v-if="getIsAddedToBlend(item)">
+                  <BaseIcon name="checkmark" />
+                </template>
+                <template v-else>
+                  <BaseButton @click="handleAddToBlend(item, 'me')"> Add to blend </BaseButton>
+                </template>
               </BaseItemPreview>
             </template>
           </div>
@@ -66,7 +82,12 @@ function handleAddToBlend(playlist: SpotifyApi.PlaylistObjectSimplified, scope: 
           <div class="playlists">
             <template v-for="item in props.friendPlaylists?.items" :key="`friend-playlist__${item.id}`">
               <BaseItemPreview :image="item.images?.[0].url" :name="item.name">
-                <BaseButton @click="handleAddToBlend(item, 'friend')"> Add to blend </BaseButton>
+                <template v-if="getIsAddedToBlend(item)">
+                  <BaseIcon name="checkmark" />
+                </template>
+                <template v-else>
+                  <BaseButton @click="handleAddToBlend(item, 'friend')"> Add to blend </BaseButton>
+                </template>
               </BaseItemPreview>
             </template>
           </div>
@@ -88,19 +109,8 @@ section {
   flex-direction: column;
   gap: 16px;
 
-  &-item {
-    display: grid;
-    align-items: center;
-    grid-template-columns: 1fr 100px;
-    gap: 16px;
-    border-bottom: 1px solid var(--color-line);
-    padding: 12px;
-  }
-
-  &-item-details {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+  :deep(.icon) {
+    font-size: 24px;
   }
 }
 </style>

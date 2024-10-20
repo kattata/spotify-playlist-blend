@@ -3,7 +3,7 @@
 <template>
   <footer>
     <div class="container">
-      <div>Designed and developed by Kasia Laniecka</div>
+      <div>Playlist Blend 2024</div>
     </div>
   </footer>
 </template>

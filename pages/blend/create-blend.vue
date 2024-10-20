@@ -7,7 +7,7 @@ if (!query.mePlaylistId || !query.friendPlaylistId) {
 </script>
 
 <template>
-  <div>
+  <div class="page">
     <BlendStep2 />
   </div>
 </template>
