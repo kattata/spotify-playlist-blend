@@ -13,6 +13,12 @@ export default defineNuxtConfig({
     }
   },
 
+  app: {
+    head: {
+      link: [{ rel: 'icon', type: 'image/x-icon', href: 'https://fav.farm/🎧' }]
+    }
+  },
+
   postcss: {
     plugins: {
       'postcss-nested': {},
