@@ -61,7 +61,7 @@ async function handleChooseFriendSubmit() {
   }
 
   :deep(.input-wrapper) {
-    width: 500px;
+    width: 100% @(min-width: 900px) 500px;
   }
 }
 </style>

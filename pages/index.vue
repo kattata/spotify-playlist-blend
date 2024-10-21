@@ -5,12 +5,9 @@ useHead({
   title: 'Playlist Blend'
 });
 
-const route = useRoute();
-const code = route.query.code;
-const { $spotifyApi } = useNuxtApp();
-
-// const error = route.query.error; // TODO: Handle error
 const user = useCookie<UserCookie>('user', { maxAge: 60 * 60 });
+
+const { $spotifyApi } = useNuxtApp();
 
 const profileData = ref<SpotifyApi.CurrentUsersProfileResponse | null>(null);
 const myPlaylistData = ref<SpotifyApi.ListOfUsersPlaylistsResponse | null>(null);
@@ -22,34 +19,8 @@ const blendItem = ref<BlendItem>({
   friend: null
 });
 
-onMounted(async () => {
-  if (code) {
-    if (!user.value) {
-      await useAuth().signinCallback();
-
-      const authUser = await useAuth().getUser();
-
-      if (authUser?.access_token) {
-        user.value = {
-          accessToken: authUser.access_token
-        };
-
-        await nextTick(() => {
-          fetchMe();
-        });
-      }
-
-      navigateTo('/');
-    }
-  }
-});
-
 if (user.value?.accessToken) {
   fetchMe();
-}
-
-async function handleAuth() {
-  await useAuth().signinRedirect();
 }
 
 async function fetchMe() {
@@ -107,56 +78,34 @@ async function handleFriendSelected(userData: SpotifyApi.UserObjectPublic, frien
 <template>
   <div class="page front-page">
     <div class="container">
-      <template v-if="user?.accessToken">
-        <div class="authentication-success">
-          <p>You are logged in as</p>
-          <div class="authentication-success-profile">
-            <BaseImage v-if="profileData?.images?.[0]?.url" :src="profileData?.images?.[0]?.url" width="30px" />
-            <strong>{{ profileData?.display_name }}</strong>
-          </div>
+      <div class="authentication-success">
+        <p>You are logged in as</p>
+        <div class="authentication-success-profile">
+          <BaseImage v-if="profileData?.images?.[0]?.url" :src="profileData?.images?.[0]?.url" width="30px" />
+          <strong>{{ profileData?.display_name }}</strong>
         </div>
+      </div>
 
-        <div class="blend-actions">
-          <BlendChooseFriend @user-selected="handleFriendSelected" />
+      <div class="blend-actions">
+        <BlendChooseFriend @user-selected="handleFriendSelected" />
 
-          <template v-if="blendItem?.me && blendItem?.friend">
-            <BlendConfirm :blend-item="blendItem" />
-          </template>
-        </div>
+        <template v-if="blendItem?.me && blendItem?.friend">
+          <BlendConfirm :blend-item="blendItem" />
+        </template>
+      </div>
 
-        <BlendStep1
-          v-model="blendItem"
-          :my-playlists="myPlaylistData"
-          :friend-playlists="friendPlaylistData"
-          :friend-name="friendData?.display_name"
-        />
-      </template>
-
-      <template v-else>
-        <div class="intro">
-          <h2>What is Playlist Blend?</h2>
-          <p>
-            Playlist Blend is a fun and simple way to combine your favorite playlists with a friend’s! Whether you’re creating the perfect
-            soundtrack for a hangout, road trip, or just want to see how your music styles fit together, Playlist Blend makes it easy.
-          </p>
-          <p>All you have to do it connect your Spotify account and choose playlists you want to blend.</p>
-          <BaseButton @click="handleAuth">Log in with Spotify</BaseButton>
-        </div>
-      </template>
+      <BlendStep1
+        v-model="blendItem"
+        :my-playlists="myPlaylistData"
+        :friend-playlists="friendPlaylistData"
+        :friend-name="friendData?.display_name"
+      />
     </div>
   </div>
 </template>
 
 <style lang="postcss" scoped>
 .front-page {
-  .intro {
-    max-width: 600px;
-
-    button {
-      margin-top: 16px;
-    }
-  }
-
   .authentication-success {
     border-bottom: 1px solid var(--color-line);
 
