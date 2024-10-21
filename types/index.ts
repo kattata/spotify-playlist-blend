@@ -1,14 +1,10 @@
 export interface BlendItem {
   me: {
-    playlistId: string | null;
-    playlistName: string;
-    userName?: string;
-  } | null;
+    playlistIds: string[];
+  };
   friend: {
-    playlistId: string | null;
-    playlistName: string;
-    userName?: string;
-  } | null;
+    playlistIds: string[];
+  };
 }
 
 export interface UserCookie {

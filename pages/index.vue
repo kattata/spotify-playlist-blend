@@ -15,8 +15,12 @@ const friendData = ref<SpotifyApi.UserObjectPublic | null>(null);
 const friendPlaylistData = ref<SpotifyApi.ListOfUsersPlaylistsResponse | null>(null);
 
 const blendItem = ref<BlendItem>({
-  me: null,
-  friend: null
+  me: {
+    playlistIds: []
+  },
+  friend: {
+    playlistIds: []
+  }
 });
 
 if (user.value?.accessToken) {
@@ -84,7 +88,7 @@ async function handleFriendSelected(userData: SpotifyApi.UserObjectPublic, frien
       <div class="blend-actions">
         <BlendChooseFriend @user-selected="handleFriendSelected" />
 
-        <template v-if="blendItem?.me && blendItem?.friend">
+        <template v-if="blendItem?.me.playlistIds.length && blendItem?.friend.playlistIds.length">
           <BlendConfirm :blend-item="blendItem" />
         </template>
       </div>

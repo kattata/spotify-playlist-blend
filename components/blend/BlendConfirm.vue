@@ -12,9 +12,9 @@ function handleCreateBlend() {
     navigateTo({
       path: '/blend/create-blend',
       query: {
-        mePlaylistId: props.blendItem.me.playlistId,
+        mePlaylistId: props.blendItem.me.playlistIds,
         mePlaylistName: props.blendItem.me.playlistName,
-        friendPlaylistId: props.blendItem.friend.playlistId,
+        friendPlaylistId: props.blendItem.friend.playlistIds,
         friendPlaylistName: props.blendItem.friend.playlistName
       }
     });

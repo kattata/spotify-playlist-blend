@@ -39,20 +39,4 @@ const isDisabled = computed(() => {
   </button>
 </template>
 
-<style lang="postcss" scoped>
-.button {
-  border: 1px solid var(--color-line);
-  background-color: var(--color-white);
-  padding: 12px 20px;
-  font-size: var(--font-size-s);
-  border-radius: var(--border-radius-medium);
-  white-space: nowrap;
-  width: fit-content;
-  height: fit-content;
-
-  &--ghost {
-    border: 0;
-    background-color: transparent;
-  }
-}
-</style>
+<style lang="postcss" scoped></style>

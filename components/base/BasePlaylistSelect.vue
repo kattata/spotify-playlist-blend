@@ -7,37 +7,49 @@ interface Props {
   description?: string;
 }
 
+const emit = defineEmits<{
+  'update:modelValue': [string[]];
+}>();
+
 const props = defineProps<Props>();
 
 const value = defineModel<string[]>();
+
+const isSelected = computed(() => {
+  return props.modelValue.find(item => item === props.id);
+});
 </script>
 
 <template>
-  <div class="item-preview">
-    <div class="item-preview-details">
+  <div class="playlist-select">
+    <div class="playlist-select-details">
       <template v-if="props.image">
-        <BaseImage class="item-preview-image" :src="props.image" width="50px" />
+        <BaseImage class="playlist-select-image" :src="props.image" width="50px" />
       </template>
       <template v-else>
-        <div class="item-preview-image"></div>
+        <div class="playlist-select-image"></div>
       </template>
       <div>
         <div>{{ props.name }}</div>
-        <div v-if="props.description" class="item-preview-description">
+        <div v-if="props.description" class="playlist-select-description">
           {{ props.description }}
         </div>
       </div>
     </div>
-    <div class="item-preview-slot">
-      <input v-model="value" type="checkbox" :value="props.id" />
-
-      <!-- <slot></slot> -->
+    <div class="playlist-select-action">
+      <input :id="props.id" v-model="value" type="checkbox" :value="props.id" />
+      <label class="button" :for="props.id" :class="{ selected: isSelected }">
+        <template v-if="isSelected">
+          <BaseIcon name="checkmark" />
+        </template>
+        <template v-else>Add to blend</template>
+      </label>
     </div>
   </div>
 </template>
 
 <style lang="postcss" scoped>
-.item-preview {
+.playlist-select {
   display: grid;
   align-items: center;
   grid-template-columns: 1fr 150px;
@@ -63,8 +75,18 @@ const value = defineModel<string[]>();
     margin-top: 4px;
   }
 
-  &-slot {
+  &-action {
     justify-self: end;
+
+    input {
+      display: none;
+    }
+  }
+
+  .selected {
+    background-color: transparent;
+    border: 0;
+    padding: 12px;
   }
 }
 </style>

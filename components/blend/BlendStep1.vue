@@ -2,17 +2,13 @@
 import type { BlendItem } from '~/types';
 
 interface Props {
+  modelValue: BlendItem;
   myPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
   friendPlaylists: SpotifyApi.ListOfUsersPlaylistsResponse | null;
   friendName: string | undefined;
-  modelValue: BlendItem;
 }
 
 const props = defineProps<Props>();
-
-const emit = defineEmits<{
-  'update:blendItem': [BlendItem];
-}>();
 
 const { isMobile } = useBreakpoints();
 
@@ -23,26 +19,6 @@ const internalBlendItem = defineModel<BlendItem>({
 
 const isMeListExpanded = ref<boolean>(false);
 const isFriendListExpanded = ref<boolean>(false);
-
-function handleAddToBlend(playlist: SpotifyApi.PlaylistObjectSimplified, scope: 'me' | 'friend') {
-  if (scope === 'me') {
-    internalBlendItem.value.me = {
-      playlistId: playlist.id,
-      playlistName: playlist.name
-    };
-  } else {
-    internalBlendItem.value.friend = {
-      playlistId: playlist.id,
-      playlistName: playlist.name
-    };
-  }
-
-  emit('update:blendItem', internalBlendItem.value);
-}
-
-function getIsAddedToBlend(playlist: SpotifyApi.PlaylistObjectSimplified) {
-  return playlist.id === internalBlendItem.value.me?.playlistId || playlist.id === internalBlendItem.value.friend?.playlistId;
-}
 
 function handleViewMore(scope: 'me' | 'friend') {
   if (scope === 'me') {
@@ -59,16 +35,15 @@ function handleViewMore(scope: 'me' | 'friend') {
       <template v-if="props.myPlaylists">
         <div class="playlists-wrapper">
           <h2>Your playlists</h2>
+
           <div class="playlists" :class="{ 'playlists--expanded': isMeListExpanded }">
             <template v-for="item in props.myPlaylists?.items" :key="`my-playlist__${item.id}`">
-              <BaseItemPreview :image="item.images?.[0].url" :name="item.name">
-                <template v-if="getIsAddedToBlend(item)">
-                  <BaseIcon name="checkmark" />
-                </template>
-                <template v-else>
-                  <BaseButton @click="handleAddToBlend(item, 'me')"> Add to blend </BaseButton>
-                </template>
-              </BaseItemPreview>
+              <BasePlaylistSelect
+                :id="item.id"
+                v-model="internalBlendItem.me.playlistIds"
+                :image="item.images?.[0].url"
+                :name="item.name"
+              />
             </template>
           </div>
           <div v-if="isMobile()" class="playlists-view-more">
@@ -87,14 +62,12 @@ function handleViewMore(scope: 'me' | 'friend') {
           </h2>
           <div class="playlists" :class="{ 'playlists--expanded': isFriendListExpanded }">
             <template v-for="item in props.friendPlaylists?.items" :key="`friend-playlist__${item.id}`">
-              <BaseItemPreview :image="item.images?.[0].url" :name="item.name">
-                <template v-if="getIsAddedToBlend(item)">
-                  <BaseIcon name="checkmark" />
-                </template>
-                <template v-else>
-                  <BaseButton @click="handleAddToBlend(item, 'friend')"> Add to blend </BaseButton>
-                </template>
-              </BaseItemPreview>
+              <BasePlaylistSelect
+                :id="item.id"
+                v-model="internalBlendItem.friend.playlistIds"
+                :image="item.images?.[0].url"
+                :name="item.name"
+              />
             </template>
           </div>
           <div v-if="isMobile()" class="playlists-view-more">
