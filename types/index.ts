@@ -14,4 +14,6 @@ export interface BlendItem {
 export interface UserCookie {
   accessToken?: string;
   id?: string;
+  displayName?: string;
+  profileImage?: string;
 }

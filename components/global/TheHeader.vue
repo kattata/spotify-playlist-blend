@@ -1,12 +1,21 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import type { UserCookie } from '~/types';
+
+const user = useCookie<UserCookie>('user');
+</script>
 
 <template>
   <div class="container container--no-padding">
     <header>
       <div class="divider divider--horizontal"></div>
-      <BaseLink to="/"> Playlist Blend </BaseLink>
+      <BaseLink class="navigation-item" to="/">Playlist Blend</BaseLink>
 
-      <ul class="navigation-items-desktop"></ul>
+      <ul class="navigation-items-desktop">
+        <li v-if="user?.displayName" class="navigation-item profile">
+          <BaseImage v-if="user?.profileImage" :src="user.profileImage" width="30px" />
+          <div>{{ user.displayName }}</div>
+        </li>
+      </ul>
 
       <ul class="navigation-items-mobile"></ul>
     </header>
@@ -31,8 +40,6 @@ header {
   }
 
   a {
-    background-color: var(--color-background);
-    padding-inline: 16px;
     text-decoration: none;
   }
 
@@ -50,6 +57,21 @@ header {
 
   .navigation-items-mobile {
     display: flex @(min-width: 900px) none;
+  }
+
+  .navigation-item {
+    background-color: var(--color-background);
+    padding-inline: 16px;
+  }
+
+  .profile {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+
+    img {
+      border-radius: 50%;
+    }
   }
 }
 </style>
