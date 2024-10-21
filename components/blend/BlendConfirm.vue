@@ -13,9 +13,7 @@ function handleCreateBlend() {
       path: '/blend/create-blend',
       query: {
         mePlaylistId: props.blendItem.me.playlistIds,
-        mePlaylistName: props.blendItem.me.playlistName,
-        friendPlaylistId: props.blendItem.friend.playlistIds,
-        friendPlaylistName: props.blendItem.friend.playlistName
+        friendPlaylistId: props.blendItem.friend.playlistIds
       }
     });
   }
@@ -25,13 +23,7 @@ function handleCreateBlend() {
 <template>
   <template v-if="props.blendItem.me && props.blendItem.friend">
     <div class="confirm-blend">
-      <div>
-        Create blend for
-        <strong>{{ props.blendItem.me.playlistName }}</strong>
-        and
-        <strong> {{ props.blendItem.friend.playlistName }} </strong>
-        ?
-      </div>
+      <div>Create blend?</div>
       <BaseButton @click="handleCreateBlend">Confirm</BaseButton>
     </div>
   </template>
