@@ -17,7 +17,11 @@ const user = useCookie<UserCookie>('user');
         </li>
       </ul>
 
-      <ul class="navigation-items-mobile"></ul>
+      <ul class="navigation-items-mobile">
+        <li v-if="user?.profileImage" class="navigation-item profile">
+          <BaseImage v-if="user?.profileImage" :src="user.profileImage" width="30px" />
+        </li>
+      </ul>
     </header>
   </div>
 </template>
